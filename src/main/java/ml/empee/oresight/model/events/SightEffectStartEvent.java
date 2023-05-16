@@ -19,6 +19,10 @@ public class SightEffectStartEvent extends Event {
 
   private static final HandlerList HANDLERS = new HandlerList();
 
+  public static HandlerList getHandlerList() {
+    return HANDLERS;
+  }
+
   private final Player player;
   private final Sight sight;
   private final LocalDateTime expireTime;
