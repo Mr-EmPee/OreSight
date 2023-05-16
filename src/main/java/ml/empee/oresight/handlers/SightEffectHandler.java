@@ -3,13 +3,16 @@ package ml.empee.oresight.handlers;
 import ml.empee.ioc.Bean;
 import ml.empee.ioc.RegisteredListener;
 import ml.empee.ioc.ScheduledTask;
+import ml.empee.oresight.model.content.Sight;
 import ml.empee.oresight.model.events.SightEffectEndEvent;
 import ml.empee.oresight.services.SightService;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.player.PlayerItemConsumeEvent;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -30,13 +33,13 @@ public class SightEffectHandler extends ScheduledTask implements Bean, Registere
   @Override
   public void run() {
     for (SightService.SightMeta meta : sightService.getSightHolders()) {
-      Player player = Bukkit.getPlayer(meta.holder());
+      Player player = Bukkit.getPlayer(meta.getHolder());
       if (player == null) {
         continue;
       }
 
-      meta.sight().hideBlocks(player);
-      meta.sight().highlightBlocksNear(player, player.getLocation());
+      meta.getSight().hideBlocks(player);
+      meta.getSight().highlightBlocksNear(player, player.getLocation());
     }
   }
 
@@ -54,11 +57,11 @@ public class SightEffectHandler extends ScheduledTask implements Bean, Registere
   public void onPlayerBreak(BlockBreakEvent event) {
     Player player = event.getPlayer();
     List<SightService.SightMeta> activatedSights = sightService.getSightHolders().stream()
-        .filter(h -> h.holder().equals(player.getUniqueId()))
+        .filter(h -> h.getHolder().equals(player.getUniqueId()))
         .toList();
 
     for (SightService.SightMeta meta : activatedSights) {
-      meta.sight().hideBlockFrom(player, event.getBlock());
+      meta.getSight().hideBlockFrom(player, event.getBlock());
     }
   }
 

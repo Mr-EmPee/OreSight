@@ -1,6 +1,9 @@
 package ml.empee.oresight.services;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import ml.empee.ioc.Bean;
 import ml.empee.oresight.config.SightsConfig;
 import ml.empee.oresight.model.content.Sight;
@@ -29,7 +32,12 @@ public class SightService implements Bean {
   /**
    * Contains metadata of an activated sight
    */
-  public record SightMeta(UUID holder, Sight sight, LocalDateTime expireTime) {
+  @Getter @Setter
+  @AllArgsConstructor
+  public static class SightMeta {
+    private final UUID holder;
+    private final Sight sight;
+    private LocalDateTime expireTime;
   }
 
   @Override
@@ -63,8 +71,20 @@ public class SightService implements Bean {
     });
   }
 
+  /**
+   * Give a sight effect or update the expire time of an existing one
+   */
   public void giveSightEffectTo(Player player, Sight sight, LocalDateTime expireTime) {
     Bukkit.getPluginManager().callEvent(SightEffectStartEvent.of(player, sight, expireTime));
+    UUID uuid = player.getUniqueId();
+
+    for (SightMeta meta : sightEffectHolders) {
+      if (meta.getHolder().equals(uuid) && meta.getSight().equals(sight)) {
+        meta.setExpireTime(expireTime);
+        return;
+      }
+    }
+
     sightEffectHolders.add(new SightMeta(player.getUniqueId(), sight, expireTime));
   }
 
