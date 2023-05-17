@@ -1,12 +1,16 @@
 package ml.empee.oresight.handlers;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import ml.empee.ioc.Bean;
 import ml.empee.ioc.RegisteredListener;
 import ml.empee.ioc.ScheduledTask;
 import ml.empee.oresight.model.content.Sight;
 import ml.empee.oresight.model.events.SightEffectEndEvent;
 import ml.empee.oresight.services.SightService;
+import ml.empee.oresight.utils.LocationUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -14,6 +18,8 @@ import org.bukkit.event.player.PlayerItemConsumeEvent;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Handler that keep tracks of who has the sight enabled
@@ -24,6 +30,9 @@ import java.util.List;
 public class SightEffectHandler extends ScheduledTask implements Bean, RegisteredListener {
 
   private final SightService sightService;
+  private final Cache<UUID, Location> lastLocations = CacheBuilder.newBuilder()
+      .expireAfterAccess(2, TimeUnit.SECONDS)
+      .build();
 
   public SightEffectHandler(SightService sightService) {
     super(0, 20, false);
@@ -38,8 +47,16 @@ public class SightEffectHandler extends ScheduledTask implements Bean, Registere
         continue;
       }
 
-      meta.getSight().hideBlocks(player);
-      meta.getSight().highlightBlocksNear(player, player.getLocation());
+      Location lastLocation = lastLocations.getIfPresent(player.getUniqueId());
+      Location currentLocation = player.getLocation();
+
+      if (lastLocation == null) {
+        meta.getSight().highlightBlocksNear(player, currentLocation);
+      } else if (!LocationUtils.isSameBlock(lastLocation, currentLocation)) {
+        meta.getSight().refreshHighlightedBlocksFor(player, lastLocation, currentLocation);
+      }
+
+      lastLocations.put(player.getUniqueId(), currentLocation);
     }
   }
 

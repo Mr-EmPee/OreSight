@@ -10,7 +10,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -77,6 +76,31 @@ public class Sight {
     sentBlocks.remove(player.getUniqueId());
   }
 
+  /**
+   * Highlight <b>new</b> blocks that are in-range and hide the ones that are out of range
+   */
+  public void refreshHighlightedBlocksFor(Player player, Location lastLocation, Location currentLocation) {
+    List<Block> lastSentBlocks = new ArrayList<>();
+
+    LocationUtils.forEachBlockWithinRadius(lastLocation, distance, l -> {
+      Block block = l.getBlock();
+      if (targetedBlocks.contains(block.getType())) {
+        lastSentBlocks.add(block);
+      }
+    });
+
+    LocationUtils.forEachBlockWithinRadius(currentLocation, distance, l -> {
+      Block block = l.getBlock();
+      if (targetedBlocks.contains(block.getType())) {
+        if (!lastSentBlocks.remove(block)) {
+          highlightBlockTo(player, block);
+        }
+      }
+    });
+
+    hideBlocksFrom(player, lastSentBlocks);
+  }
+
   public void hideBlockFrom(Player player, Block block) {
     if (!targetedBlocks.contains(block.getType())) {
       return;
@@ -86,6 +110,18 @@ public class Sight {
     ProtocolUtils.removeEntities(player, List.of(id));
     if (sentBlocks.containsKey(player.getUniqueId())) {
       sentBlocks.get(player.getUniqueId()).remove(id);
+    }
+  }
+
+  public void hideBlocksFrom(Player player, List<Block> block) {
+    List<Integer> blockIds = block.stream()
+        .filter(b -> targetedBlocks.contains(b.getType()))
+        .map(Sight::computeBlockId)
+        .toList();
+
+    ProtocolUtils.removeEntities(player, blockIds);
+    if (sentBlocks.containsKey(player.getUniqueId())) {
+      sentBlocks.get(player.getUniqueId()).removeAll(blockIds);
     }
   }
 

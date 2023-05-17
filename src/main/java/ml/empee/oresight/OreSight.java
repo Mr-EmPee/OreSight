@@ -26,10 +26,6 @@ public final class OreSight extends JavaPlugin {
     Translator.init(this);
     Logger.setPrefix(Translator.translate("prefix"));
 
-    if (!PaperUtils.IS_RUNNING_PAPER) {
-      //printPaperWarning();
-    }
-
     //Metrics.of(this, METRICS_PLUGIN_ID);
     //Notifier.listenForUpdates(this, SPIGOT_PLUGIN_ID);
 
