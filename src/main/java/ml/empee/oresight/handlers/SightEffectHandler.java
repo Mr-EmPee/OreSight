@@ -7,6 +7,7 @@ import ml.empee.ioc.RegisteredListener;
 import ml.empee.ioc.ScheduledTask;
 import ml.empee.oresight.model.content.Sight;
 import ml.empee.oresight.model.events.SightEffectEndEvent;
+import ml.empee.oresight.model.events.SightEffectStartEvent;
 import ml.empee.oresight.services.SightService;
 import ml.empee.oresight.utils.LocationUtils;
 import org.bukkit.Bukkit;
@@ -14,6 +15,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 
 import java.time.LocalDateTime;
@@ -50,14 +52,18 @@ public class SightEffectHandler extends ScheduledTask implements Bean, Registere
       Location lastLocation = lastLocations.getIfPresent(player.getUniqueId());
       Location currentLocation = player.getLocation();
 
-      if (lastLocation == null) {
-        meta.getSight().highlightBlocksNear(player, currentLocation);
-      } else if (!LocationUtils.isSameBlock(lastLocation, currentLocation)) {
+      if (lastLocation != null && !LocationUtils.isSameBlock(lastLocation, currentLocation)) {
         meta.getSight().refreshHighlightedBlocksFor(player, lastLocation, currentLocation);
       }
 
       lastLocations.put(player.getUniqueId(), currentLocation);
     }
+  }
+
+  @EventHandler
+  public void onSightStart(SightEffectStartEvent event) {
+    Player player = event.getPlayer();
+    event.getSight().highlightBlocksNear(player, player.getLocation());
   }
 
   @EventHandler
@@ -72,13 +78,29 @@ public class SightEffectHandler extends ScheduledTask implements Bean, Registere
 
   @EventHandler(ignoreCancelled = true)
   public void onPlayerBreak(BlockBreakEvent event) {
-    Player player = event.getPlayer();
-    List<SightService.SightMeta> activatedSights = sightService.getSightHolders().stream()
-        .filter(h -> h.getHolder().equals(player.getUniqueId()))
-        .toList();
+    List<SightService.SightMeta> activatedSights = sightService.getSightHolders();
 
     for (SightService.SightMeta meta : activatedSights) {
+      Player player = Bukkit.getPlayer(meta.getHolder());
+      if (player == null) {
+        continue;
+      }
+
       meta.getSight().hideBlockFrom(player, event.getBlock());
+    }
+  }
+
+  @EventHandler(ignoreCancelled = true)
+  public void onPlayerPlace(BlockPlaceEvent event) {
+    List<SightService.SightMeta> activatedSights = sightService.getSightHolders();
+
+    for (SightService.SightMeta meta : activatedSights) {
+      Player player = Bukkit.getPlayer(meta.getHolder());
+      if (player == null) {
+        continue;
+      }
+
+      meta.getSight().highlightBlockTo(player, event.getBlock());
     }
   }
 
