@@ -12,3 +12,17 @@ iron-sight:
     - ""
     - "  &7Makes finding iron a lot simpler!"
     - ""
+diamond-sight:
+  # The sight will highlight iron-ores that are within this radius
+  max-distance: 50
+  # Time in seconds that represents how much the effect should last
+  duration: 60
+  targeted-blocks:
+    - DIAMOND_ORE
+    - DEEPSLATE_DIAMOND_ORE
+  display-name: "&bDiamond Sight"
+  color: 5F9EA0
+  lore:
+    - ""
+    - "  &7Makes finding diamonds a lot simpler!"
+    - ""
