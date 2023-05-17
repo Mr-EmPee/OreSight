@@ -60,7 +60,7 @@ public class PluginController implements Bean {
   @CommandPermission(Permissions.ADMIN)
   public void reload(CommandSender sender) {
     Translator.reload();
-
+    sightService.reload();
     Logger.log(sender, "&7The plugin has been reloaded");
   }
 

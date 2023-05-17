@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -51,6 +52,22 @@ public class SightService implements Bean {
 
   public List<Sight> getAllSights() {
     return Collections.unmodifiableList(registeredSights);
+  }
+
+  public void reload() {
+    sightEffectHolders.forEach(m ->
+        Bukkit.getPluginManager().callEvent(SightEffectEndEvent.of(m.holder, m.sight, m.expireTime))
+    );
+
+    sightEffectHolders.clear();
+    registeredSights.clear();
+
+    sightsConfig.reload();
+    sightsConfig.loadSights().forEach(this::registerSight);
+  }
+
+  public Optional<Sight> findById(String id) {
+    return getAllSights().stream().filter(s -> s.getId().equals(id)).findFirst();
   }
 
   public List<SightMeta> getSightHolders() {
