@@ -20,7 +20,7 @@ bukkit {
   load = BukkitPluginDescription.PluginLoadOrder.POSTWORLD
   main = "${basePackage}.OreSight"
   apiVersion = "1.13"
-  depend = listOf()
+  depend = listOf("ProtocolLib")
   authors = listOf("Mr. EmPee")
 }
 
