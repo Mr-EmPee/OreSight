@@ -32,6 +32,9 @@ public class Sight {
   private List<Material> targetedBlocks;
 
   @Getter
+  private String id;
+
+  @Getter
   private PluginItem item;
 
   @Getter

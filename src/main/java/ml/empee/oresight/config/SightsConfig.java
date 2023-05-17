@@ -48,6 +48,7 @@ public class SightsConfig extends AbstractConfig implements Bean {
   private Sight parseSight(String id, ConfigurationSection config) {
     var sight = Sight.builder();
 
+    sight.id(id);
     sight.duration(Duration.of(config.getInt("duration", 60), ChronoUnit.SECONDS));
     sight.distance(config.getInt("max-distance", 15));
     sight.targetedBlocks(
