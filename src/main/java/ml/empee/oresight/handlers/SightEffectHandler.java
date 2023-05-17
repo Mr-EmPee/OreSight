@@ -65,4 +65,19 @@ public class SightEffectHandler extends ScheduledTask implements Bean, Registere
     }
   }
 
+  @EventHandler(ignoreCancelled = true)
+  public void onPlayerConsume(PlayerItemConsumeEvent event) {
+    List<Sight> sights = sightService.getAllSights();
+
+    for (Sight sight : sights) {
+      if (sight.getItem().isPluginItem(event.getItem())) {
+        sightService.giveSightEffectTo(
+            event.getPlayer(), sight, LocalDateTime.now().plus(sight.getDuration())
+        );
+
+        return;
+      }
+    }
+  }
+
 }

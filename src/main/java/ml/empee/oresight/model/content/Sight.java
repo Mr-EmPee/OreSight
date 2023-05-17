@@ -2,6 +2,7 @@ package ml.empee.oresight.model.content;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import ml.empee.oresight.utils.LocationUtils;
 import ml.empee.oresight.utils.ProtocolUtils;
 import ml.empee.oresight.utils.helpers.PluginItem;
@@ -11,6 +12,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -27,14 +29,16 @@ import java.util.UUID;
 public class Sight {
 
   private final Map<UUID, List<Integer>> sentBlocks = new HashMap<>();
-
-  private PluginItem item;
   private List<Material> targetedBlocks;
+
+  @Getter
+  private PluginItem item;
+
+  @Getter
   private Integer distance;
 
-  public ItemStack getSightItem() {
-    return item.build();
-  }
+  @Getter
+  private Duration duration;
 
   public List<Material> getTargetedBlocks() {
     return Collections.unmodifiableList(targetedBlocks);

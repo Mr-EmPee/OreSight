@@ -1,5 +1,6 @@
 package ml.empee.oresight.utils.helpers;
 
+import ml.empee.itembuilder.BaseItemBuilder;
 import ml.empee.itembuilder.ItemBuilder;
 import ml.empee.itembuilder.utils.ItemNbt;
 import org.bukkit.Material;
@@ -16,10 +17,10 @@ public class PluginItem {
 
   protected final JavaPlugin plugin;
   protected final String name;
-  protected final ItemBuilder item;
+  protected final BaseItemBuilder<?> item;
   protected final String version;
 
-  public PluginItem(JavaPlugin plugin, String name, String version, ItemBuilder item) {
+  public PluginItem(JavaPlugin plugin, String name, String version, BaseItemBuilder<?> item) {
     this.plugin = plugin;
     this.name = name;
     this.item = item;

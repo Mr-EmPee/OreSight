@@ -1,0 +1,14 @@
+iron-sight:
+  # The sight will highlight iron-ores that are within this radius
+  max-distance: 15
+  # Time in seconds that represents how much the effect should last
+  duration: 60
+  targeted-blocks:
+    - IRON_ORE
+    - DEEPSLATE_IRON_ORE
+  display-name: "&eIron Sight"
+  color: 7CFC00
+  lore:
+    - ""
+    - "  &7Makes finding iron a lot simpler!"
+    - ""

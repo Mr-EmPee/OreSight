@@ -50,7 +50,7 @@ dependencies {
   //implementation("org.cloudburstmc:nbt:3.0.1.Final")
   //implementation("com.github.Mr-EmPee:SimpleLectorem:1.0.0")
   //implementation("com.github.Mr-EmPee:SimpleHeraut:1.0.1")
-  implementation("com.github.Mr-EmPee:ItemBuilder:1.0.0")
+  implementation("com.github.Mr-EmPee:ItemBuilder:1.1.1")
 
   //implementation("io.github.rysefoxx.inventory:RyseInventory-Plugin:1.5.7")
   //implementation("com.j256.ormlite:ormlite-jdbc:6.1")
