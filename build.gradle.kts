@@ -1,5 +1,4 @@
 import net.minecrell.pluginyml.bukkit.BukkitPluginDescription
-import org.gradle.internal.impldep.bsh.commands.dir
 
 plugins {
   id("org.gradle.java-library")
@@ -14,7 +13,7 @@ plugins {
 }
 
 group = "ml.empee"
-version = "1.0.0-SNAPSHOT"
+version = "1.0.0"
 var basePackage = "ml.empee.oresight"
 
 bukkit {
@@ -49,7 +48,7 @@ dependencies {
   compileOnly("com.comphenix.protocol:ProtocolLib:5.0.0")
   //implementation("org.cloudburstmc:nbt:3.0.1.Final")
   //implementation("com.github.Mr-EmPee:SimpleLectorem:1.0.0")
-  //implementation("com.github.Mr-EmPee:SimpleHeraut:1.0.1")
+  implementation("com.github.Mr-EmPee:SimpleHeraut:1.0.1")
   implementation("com.github.Mr-EmPee:ItemBuilder:1.1.1")
 
   //implementation("io.github.rysefoxx.inventory:RyseInventory-Plugin:1.5.7")
@@ -63,7 +62,7 @@ tasks {
   }
 
   shadowJar {
-    isEnableRelocation = false
+    isEnableRelocation = true
     relocationPrefix = "$basePackage.relocations"
   }
 
