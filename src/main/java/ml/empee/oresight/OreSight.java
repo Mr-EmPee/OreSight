@@ -14,7 +14,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public final class OreSight extends JavaPlugin {
 
-  private static final String SPIGOT_PLUGIN_ID = "109901";
+  private static final String SPIGOT_PLUGIN_ID = "109956";
   private static final Integer METRICS_PLUGIN_ID = 18498;
 
   @Getter
