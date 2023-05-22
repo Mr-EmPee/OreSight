@@ -11,8 +11,10 @@ import ml.empee.oresight.model.events.SightEffectStartEvent;
 import ml.empee.oresight.services.SightService;
 import ml.empee.oresight.utils.LocationUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -28,7 +30,6 @@ import java.util.concurrent.TimeUnit;
  * Handler that keep tracks of who has the sight enabled
  */
 
-//TODO: Particles
 public class SightEffectHandler extends ScheduledTask implements Bean, RegisteredListener {
 
   private final SightService sightService;
@@ -49,6 +50,8 @@ public class SightEffectHandler extends ScheduledTask implements Bean, Registere
         continue;
       }
 
+      spawnPotionEffect(player, meta.getSight().getColor());
+
       Location lastLocation = lastLocations.getIfPresent(player.getUniqueId());
       Location currentLocation = player.getLocation();
 
@@ -58,6 +61,17 @@ public class SightEffectHandler extends ScheduledTask implements Bean, Registere
 
       lastLocations.put(player.getUniqueId(), currentLocation);
     }
+  }
+
+  private static void spawnPotionEffect(Player player, Color color) {
+    double red = color.getRed() / 255D;
+    double green = color.getGreen() / 255D;
+    double blue = color.getBlue() / 255D;
+
+    player.spawnParticle(Particle.SPELL_MOB, player.getLocation().add(0.2, 0.3, 0.1), 0, red, green, blue, 1);
+    player.spawnParticle(Particle.SPELL_MOB, player.getLocation().add(-0.2, 1.0, -0.1), 0, red, green, blue, 1);
+    player.spawnParticle(Particle.SPELL_MOB, player.getLocation().add(0.4, 0.5, 0.4), 0, red, green, blue, 1);
+    player.spawnParticle(Particle.SPELL_MOB, player.getLocation().add(-0.4, 1.0, -0.3), 0, red, green, blue, 1);
   }
 
   @EventHandler

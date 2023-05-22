@@ -6,6 +6,7 @@ import lombok.Getter;
 import ml.empee.oresight.utils.LocationUtils;
 import ml.empee.oresight.utils.ProtocolUtils;
 import ml.empee.oresight.utils.helpers.PluginItem;
+import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -41,6 +42,9 @@ public class Sight {
 
   @Getter
   private Duration duration;
+
+  @Getter
+  private Color color;
 
   public List<Material> getTargetedBlocks() {
     return Collections.unmodifiableList(targetedBlocks);
