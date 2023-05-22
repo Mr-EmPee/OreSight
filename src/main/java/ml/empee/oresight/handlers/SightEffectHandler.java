@@ -12,6 +12,7 @@ import ml.empee.oresight.services.SightService;
 import ml.empee.oresight.utils.LocationUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -27,7 +28,6 @@ import java.util.concurrent.TimeUnit;
  * Handler that keep tracks of who has the sight enabled
  */
 
-//TODO: Milk remove sight effects
 //TODO: Particles
 public class SightEffectHandler extends ScheduledTask implements Bean, RegisteredListener {
 
@@ -77,6 +77,15 @@ public class SightEffectHandler extends ScheduledTask implements Bean, Registere
   }
 
   @EventHandler(ignoreCancelled = true)
+  public void onMilkConsume(PlayerItemConsumeEvent event) {
+    if (event.getItem().getType() != Material.MILK_BUCKET) {
+      return;
+    }
+
+    sightService.clearSightEffectsTo(event.getPlayer());
+  }
+
+  @EventHandler(ignoreCancelled = true)
   public void onPlayerBreak(BlockBreakEvent event) {
     List<SightService.SightMeta> activatedSights = sightService.getSightHolders();
 
@@ -105,7 +114,7 @@ public class SightEffectHandler extends ScheduledTask implements Bean, Registere
   }
 
   @EventHandler(ignoreCancelled = true)
-  public void onPlayerConsume(PlayerItemConsumeEvent event) {
+  public void onPotionConsume(PlayerItemConsumeEvent event) {
     List<Sight> sights = sightService.getAllSights();
 
     for (Sight sight : sights) {

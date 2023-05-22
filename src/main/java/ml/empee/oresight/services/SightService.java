@@ -76,6 +76,10 @@ public class SightService implements Bean {
     return Collections.unmodifiableList(sightEffectHolders);
   }
 
+  public void clearSightEffectsTo(Player player) {
+    sightEffectHolders.removeIf(m -> m.getHolder().equals(player.getUniqueId()));
+  }
+
   private void refreshSightHolders() {
     LocalDateTime now = LocalDateTime.now();
     sightEffectHolders.removeIf(m -> {
