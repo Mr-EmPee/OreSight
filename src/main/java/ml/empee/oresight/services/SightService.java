@@ -33,7 +33,8 @@ public class SightService implements Bean {
   /**
    * Contains metadata of an activated sight
    */
-  @Getter @Setter
+  @Getter
+  @Setter
   @AllArgsConstructor
   public static class SightMeta {
     private final UUID holder;
@@ -77,7 +78,14 @@ public class SightService implements Bean {
   }
 
   public void clearSightEffectsTo(Player player) {
-    sightEffectHolders.removeIf(m -> m.getHolder().equals(player.getUniqueId()));
+    sightEffectHolders.removeIf(m -> {
+      if (m.getHolder().equals(player.getUniqueId())) {
+        Bukkit.getPluginManager().callEvent(SightEffectEndEvent.of(m.holder, m.sight, m.expireTime));
+        return true;
+      }
+
+      return false;
+    });
   }
 
   private void refreshSightHolders() {
