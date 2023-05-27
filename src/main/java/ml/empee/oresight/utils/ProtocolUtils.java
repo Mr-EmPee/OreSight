@@ -9,6 +9,7 @@ import com.comphenix.protocol.wrappers.WrappedDataWatcher;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.bukkit.Location;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
@@ -27,15 +28,17 @@ public class ProtocolUtils {
   /**
    * Spawn an invisible glowing shulker to the player
    */
-  public static void sendGlowingBlockEffect(Player target, Integer entityID, Location location) {
+  public static void sendGlowingBlockEffect(Player target, Integer entityID, Location location, BlockData blockData) {
     var packet = new PacketContainer(PacketType.Play.Server.SPAWN_ENTITY);
 
     packet.getUUIDs().write(0, UUID.randomUUID());
     packet.getIntegers().write(0, entityID);
-    packet.getEntityTypeModifier().write(0, EntityType.SHULKER);
-    packet.getDoubles().write(0, location.getX());
-    packet.getDoubles().write(1, location.getY());
-    packet.getDoubles().write(2, location.getZ());
+    packet.getEntityTypeModifier().write(0, EntityType.FALLING_BLOCK);
+    packet.getDoubles().write(0, location.getX() + 0.5);
+    packet.getDoubles().write(1, location.getY() - 0.001);
+    packet.getDoubles().write(2, location.getZ() + 0.5);
+
+    packet.getIntegers().write(4, NmsRegistry.getBlockId(blockData));
 
     var metadata = new PacketContainer(PacketType.Play.Server.ENTITY_METADATA);
     metadata.getIntegers().write(0, entityID);
@@ -44,7 +47,8 @@ public class ProtocolUtils {
     // 0x20 == Invisibility
     Byte mask = 0x40 | 0x20;
     metadata.getDataValueCollectionModifier().write(0, List.of(
-        new WrappedDataValue(0, WrappedDataWatcher.Registry.get(Byte.class), mask)
+        new WrappedDataValue(0, WrappedDataWatcher.Registry.get(Byte.class), mask), //Status effects
+        new WrappedDataValue(5, WrappedDataWatcher.Registry.get(Boolean.class), true) //Disable gravity
     ));
 
     protocolManager.sendServerPacket(target, packet);

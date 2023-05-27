@@ -66,7 +66,7 @@ public class Sight {
     }
 
     int id = computeBlockId(block);
-    ProtocolUtils.sendGlowingBlockEffect(player, id, block.getLocation());
+    ProtocolUtils.sendGlowingBlockEffect(player, id, block.getLocation(), block.getBlockData());
     sentBlocks.computeIfAbsent(player.getUniqueId(), p -> new ArrayList<>()).add(id);
   }
 
